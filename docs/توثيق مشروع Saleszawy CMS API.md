@@ -15,81 +15,99 @@
 
 ### 1.3 الأطراف
 
-| الطرف | الدور |
-| --- | --- |
-| Backend (Laravel) | يوفر Public API و Admin API |
+| الطرف              | الدور                                                  |
+| ------------------ | ------------------------------------------------------ |
+| Backend (Laravel)  | يوفر Public API و Admin API                            |
 | Frontend (Next.js) | الموقع العام + لوحة الإدارة (افتراض: تستهلك Admin API) |
-| الأدمن / المحررين | يديروا المحتوى من لوحة الإدارة |
-| الزوار | يقرأوا المحتوى ويبعتوا طلبات التواصل |
+| الأدمن / المحررين  | يديروا المحتوى من لوحة الإدارة                         |
+| الزوار             | يقرأوا المحتوى ويبعتوا طلبات التواصل                   |
 
 > **افتراض مهم:** لوحة الـ CMS هتتبني في الفرونت وتستهلك Admin API. لو اتقرر استخدام Filament جوه Laravel بدلها، الـ Public API والطبقات (Actions / Services) تفضل زي ما هي.
 
 ## 2. القرارات المعمارية
 
-| القرار | السبب |
-| --- | --- |
-| API-only (بدون Blade/Vite) | الفرونت منفصل تماماً ومفيش داعي لأي assets في الـ backend |
-| Public API منفصل عن Admin API | اختلاف الـ caching والصلاحيات والـ rate limits |
-| Versioning بالـ URL: `/api/v1` | تطوير الـ API من غير كسر الفرونت |
-| Actions + Services + DTOs | Controllers خفيفة وكود قابل للاختبار وإعادة الاستخدام |
-| Response موحد عبر Trait | شكل ثابت للنجاح والأخطاء والـ pagination |
-| Sanctum (Bearer tokens) | بسيط ومناسب للوحة إدارة منفصلة |
-| Cache + Revalidation Webhook | الموقع سريع والمحتوى يتحدث فوراً بعد النشر |
-| Enums بدل الـ strings | حالات المحتوى والأدوار تبقى type-safe |
+| القرار                         | السبب                                                     |
+| ------------------------------ | --------------------------------------------------------- |
+| API-only (بدون Blade/Vite)     | الفرونت منفصل تماماً ومفيش داعي لأي assets في الـ backend |
+| Public API منفصل عن Admin API  | اختلاف الـ caching والصلاحيات والـ rate limits            |
+| Versioning بالـ URL: `/api/v1` | تطوير الـ API من غير كسر الفرونت                          |
+| Actions + Services + DTOs      | Controllers خفيفة وكود قابل للاختبار وإعادة الاستخدام     |
+| Response موحد عبر Trait        | شكل ثابت للنجاح والأخطاء والـ pagination                  |
+| Sanctum (Bearer tokens)        | بسيط ومناسب للوحة إدارة منفصلة                            |
+| Cache + Revalidation Webhook   | الموقع سريع والمحتوى يتحدث فوراً بعد النشر                |
+| Enums بدل الـ strings          | حالات المحتوى والأدوار تبقى type-safe                     |
 
 ## 3. التقنيات والإصدارات
 
 ### 3.1 البيئة
 
-| المكون | الإصدار |
-| --- | --- |
-| PHP | ^8.2 (المقترح للتشغيل 8.3+) |
-| Laravel | ^12.0 |
-| MySQL | 8.0+ (مطلوب لـ JSON و FULLTEXT) |
-| Redis | 7+ (cache + queue) |
-| Composer | 2.x |
+| المكون   | الإصدار                         |
+| -------- | ------------------------------- |
+| PHP      | ^8.2 (المقترح للتشغيل 8.3+)     |
+| Laravel  | ^12.0                           |
+| MySQL    | 8.0+ (مطلوب لـ JSON و FULLTEXT) |
+| Redis    | 7+ (cache + queue)              |
+| Composer | 2.x                             |
 
-### 3.2 المكتبات الموجودة في composer.json الحالي
+### 3.2 المكتبات المثبتة في composer.json الحالي
 
-| الحزمة | الإصدار | الاستخدام |
-| --- | --- | --- |
-| laravel/framework | ^12.0 | الإطار الأساسي |
-| laravel/tinker | ^2.10.1 | REPL للتجربة |
-| laravel/pint | ^1.24 | Code style |
-| laravel/pail | ^1.2.2 | متابعة الـ logs |
-| laravel/sail | ^1.41 | بيئة Docker للتطوير |
-| phpunit/phpunit | ^11.5.50 | الاختبارات |
-| mockery/mockery | ^1.6 | Mocking |
-| nunomaduro/collision | ^8.6 | تحسين عرض الأخطاء |
-| fakerphp/faker | ^1.23 | بيانات تجريبية |
+**الحزم الأساسية والإنتاجية**
 
-### 3.3 المكتبات المضافة
+| الحزمة                                       | الإصدار  | الاستخدام                               |
+| -------------------------------------------- | -------- | --------------------------------------- |
+| php                                          | ^8.2     | متطلبات تشغيل المشروع                   |
+| laravel/framework                            | ^12.0    | الإطار الأساسي                          |
+| laravel/tinker                               | ^2.10.1  | REPL للتجربة وتشغيل الأوامر             |
+| bezhansalleh/filament-shield                 | ^4.3     | الأدوار والصلاحيات داخل Filament        |
+| filament/filament                            | ^5.11    | لوحة إدارة Filament                     |
+| filament/spatie-laravel-media-library-plugin | ^5.11    | ربط Filament بمكتبة الملفات والصور      |
+| spatie/laravel-medialibrary                  | ^11.23   | رفع وإدارة الصور والملفات               |
+| spatie/laravel-query-builder                 | ^6.4     | filter و sort و include من query string |
+| spatie/laravel-sluggable                     | ^3.8     | توليد الـ slugs بشكل آلي                |
+| dedoc/scramble                               | ^0.13.55 | توثيق OpenAPI من الكود                  |
 
-| الحزمة | الإصدار المستهدف | الغرض |
-| --- | --- | --- |
-| laravel/sanctum | ^4.0 | Authentication |
-| spatie/laravel-permission | ^6.0 | الأدوار والصلاحيات |
-| spatie/laravel-medialibrary | ^11.0 | رفع وإدارة الصور |
-| spatie/laravel-sluggable | ^3.0 | توليد الـ slugs |
-| spatie/laravel-query-builder | ^6.0 | filter / sort / include من الـ query string |
-| spatie/laravel-translatable | ^6.0 | اختياري لو الموقع ثنائي اللغة |
-| dedoc/scramble | ^0.12 | توثيق OpenAPI تلقائي من الكود |
-| predis/predis | ^2.0 | Redis client (أو phpredis extension) |
-| larastan/larastan | ^3.0 (dev) | Static analysis |
-| filament |  | Dashboard |
+**حزم التطوير والاختبار**
 
->
+| الحزمة               | الإصدار  | الاستخدام           |
+| -------------------- | -------- | ------------------- |
+| larastan/larastan    | ^3.15    | Static analysis     |
+| laravel/pint         | ^1.24    | تنسيق الكود وفحصه   |
+| laravel/pail         | ^1.2.2   | متابعة الـ logs     |
+| laravel/sail         | ^1.41    | بيئة Docker للتطوير |
+| phpunit/phpunit      | ^11.5.50 | الاختبارات          |
+| mockery/mockery      | ^1.6     | Mocking             |
+| nunomaduro/collision | ^8.6     | تحسين عرض الأخطاء   |
+| fakerphp/faker       | ^1.23    | بيانات تجريبية      |
 
-### 3.4 أوامر التثبيت
+### 3.3 ملاحظات عن الحزم المثبتة
+
+- الـ Filament يعمل من خلال لوحة باسم `admin` بعد تشغيل أمر التثبيت الخاص به.
+- صلاحيات Filament تُدار عبر Filament Shield.
+- الصور والملفات تُدار عبر Spatie Media Library، وليس أعمدة صور منفصلة في الجداول.
+- البحث والفلترة من الـ query string تتم عبر Spatie Query Builder.
+- التوثيق البرمجي لـ API يتم عبر Scramble.
+- Larastan مستخدم كحزمة تطوير لفحص الأكواد تحليلياً.
+
+### 3.4 أوامر التثبيت من README
 
 ```bash
-composer require laravel/sanctum spatie/laravel-permission \
-  spatie/laravel-medialibrary spatie/laravel-sluggable \
-  spatie/laravel-query-builder dedoc/scramble predis/predis
+composer require filament/filament:"^5.0" \
+  bezhansalleh/filament-shield:"^4.0" \
+  filament/spatie-laravel-media-library-plugin:"^5.0" \
+  spatie/laravel-medialibrary \
+  spatie/laravel-sluggable \
+  spatie/laravel-query-builder \
+  dedoc/scramble
 
 composer require --dev larastan/larastan
 
-php artisan install:api   # يجهز routes/api.php و Sanctum
+php artisan filament:install --panels      # panel id: admin
+
+php artisan vendor:publish --provider="Spatie\\Permission\\PermissionServiceProvider"
+php artisan vendor:publish --provider="Spatie\\MediaLibrary\\MediaLibraryServiceProvider" --tag="medialibrary-migrations"
+
+php artisan migrate
+php artisan make:filament-user
 ```
 
 - نضيف سكربتات `lint` (Pint) و `analyse` (Larastan).
@@ -142,27 +160,27 @@ Request → Route → Middleware → FormRequest (validation → DTO)
 
 ### 5.2 مسؤولية كل طبقة
 
-| الطبقة | المسؤولية | ممنوع فيها |
-| --- | --- | --- |
-| Controller | يستقبل الطلب، يستدعي Action، يرجع Response | منطق أعمال أو استعلامات |
-| FormRequest | Validation و Authorization الأولي | منطق أعمال |
-| DTO | نقل بيانات typed بين الطبقات | أي سلوك |
-| Action | عملية أعمال واحدة (مثلاً CreatePostAction) داخل transaction | الاعتماد على Request أو Response |
-| Service | منطق مشترك أو تكامل خارجي (Cache, Media, Revalidation) | منطق تخص endpoint واحد |
-| Query | بناء استعلامات القراءة والفلترة | الكتابة في الداتابيز |
-| Model | علاقات و casts و scopes | منطق أعمال معقد |
-| Resource | شكل الـ JSON الخارج | استعلامات |
-| Policy | قرارات الصلاحيات |  |
+| الطبقة      | المسؤولية                                                   | ممنوع فيها                       |
+| ----------- | ----------------------------------------------------------- | -------------------------------- |
+| Controller  | يستقبل الطلب، يستدعي Action، يرجع Response                  | منطق أعمال أو استعلامات          |
+| FormRequest | Validation و Authorization الأولي                           | منطق أعمال                       |
+| DTO         | نقل بيانات typed بين الطبقات                                | أي سلوك                          |
+| Action      | عملية أعمال واحدة (مثلاً CreatePostAction) داخل transaction | الاعتماد على Request أو Response |
+| Service     | منطق مشترك أو تكامل خارجي (Cache, Media, Revalidation)      | منطق تخص endpoint واحد           |
+| Query       | بناء استعلامات القراءة والفلترة                             | الكتابة في الداتابيز             |
+| Model       | علاقات و casts و scopes                                     | منطق أعمال معقد                  |
+| Resource    | شكل الـ JSON الخارج                                         | استعلامات                        |
+| Policy      | قرارات الصلاحيات                                            |                                  |
 
 ### 5.3 تطبيق مبادئ SOLID
 
-| المبدأ | التطبيق في المشروع |
-| --- | --- |
-| **S** Single Responsibility | كل Action عملية واحدة، وكل Service مسؤولية واحدة |
-| **O** Open/Closed | إضافة نوع block جديد للصفحات بكلاس جديد بدون تعديل الكود القديم |
-| **L** Liskov | أي implementation للـ Contract يتبدل بدون تغيير سلوك المستهلك |
+| المبدأ                      | التطبيق في المشروع                                                  |
+| --------------------------- | ------------------------------------------------------------------- |
+| **S** Single Responsibility | كل Action عملية واحدة، وكل Service مسؤولية واحدة                    |
+| **O** Open/Closed           | إضافة نوع block جديد للصفحات بكلاس جديد بدون تعديل الكود القديم     |
+| **L** Liskov                | أي implementation للـ Contract يتبدل بدون تغيير سلوك المستهلك       |
 | **I** Interface Segregation | واجهات صغيرة (RevalidationServiceInterface, MediaUploaderInterface) |
-| **D** Dependency Inversion | الـ Actions تعتمد على Contracts، والربط في AppServiceProvider |
+| **D** Dependency Inversion  | الـ Actions تعتمد على Contracts، والربط في AppServiceProvider       |
 
 **ربط الـ Contract**
 
@@ -188,10 +206,10 @@ $this->app->bind(RevalidationServiceInterface::class, NextRevalidationService::c
 
 ```json
 {
-  "success": true,
-  "message": "تمت العملية بنجاح",
-  "data": { },
-  "meta": { }
+    "success": true,
+    "message": "تمت العملية بنجاح",
+    "data": {},
+    "meta": {}
 }
 ```
 
@@ -199,15 +217,15 @@ $this->app->bind(RevalidationServiceInterface::class, NextRevalidationService::c
 
 ```json
 {
-  "success": true,
-  "message": "",
-  "data": [ ],
-  "meta": {
-    "current_page": 1,
-    "per_page": 12,
-    "total": 48,
-    "last_page": 4
-  }
+    "success": true,
+    "message": "",
+    "data": [],
+    "meta": {
+        "current_page": 1,
+        "per_page": 12,
+        "total": 48,
+        "last_page": 4
+    }
 }
 ```
 
@@ -215,10 +233,10 @@ $this->app->bind(RevalidationServiceInterface::class, NextRevalidationService::c
 
 ```json
 {
-  "success": false,
-  "message": "البيانات المدخلة غير صحيحة",
-  "code": "VALIDATION_ERROR",
-  "errors": { "email": ["البريد الإلكتروني مطلوب"] }
+    "success": false,
+    "message": "البيانات المدخلة غير صحيحة",
+    "code": "VALIDATION_ERROR",
+    "errors": { "email": ["البريد الإلكتروني مطلوب"] }
 }
 ```
 
@@ -226,15 +244,15 @@ $this->app->bind(RevalidationServiceInterface::class, NextRevalidationService::c
 
 في `bootstrap/app.php` بنحول كل الاستثناءات لنفس الشكل داخل `withExceptions`، مع `shouldRenderJsonWhen` لطلبات `api/*`.
 
-| الاستثناء | HTTP | code |
-| --- | --- | --- |
-| ValidationException | 422 | VALIDATION\_ERROR |
-| AuthenticationException | 401 | UNAUTHENTICATED |
-| AuthorizationException | 403 | FORBIDDEN |
-| ModelNotFoundException / NotFoundHttpException | 404 | NOT\_FOUND |
-| ThrottleRequestsException | 429 | TOO\_MANY\_REQUESTS |
-| ApiException (مخصص للـ domain) | حسب الحالة | كود خاص (مثلاً POST\_ALREADY\_PUBLISHED) |
-| Throwable غير متوقع | 500 | SERVER\_ERROR (رسالة عامة في الإنتاج، والتفاصيل في الـ logs فقط) |
+| الاستثناء                                      | HTTP       | code                                                            |
+| ---------------------------------------------- | ---------- | --------------------------------------------------------------- |
+| ValidationException                            | 422        | VALIDATION_ERROR                                                |
+| AuthenticationException                        | 401        | UNAUTHENTICATED                                                 |
+| AuthorizationException                         | 403        | FORBIDDEN                                                       |
+| ModelNotFoundException / NotFoundHttpException | 404        | NOT_FOUND                                                       |
+| ThrottleRequestsException                      | 429        | TOO_MANY_REQUESTS                                               |
+| ApiException (مخصص للـ domain)                 | حسب الحالة | كود خاص (مثلاً POST_ALREADY_PUBLISHED)                          |
+| Throwable غير متوقع                            | 500        | SERVER_ERROR (رسالة عامة في الإنتاج، والتفاصيل في الـ logs فقط) |
 
 ## 7. المصادقة والصلاحيات
 
@@ -246,25 +264,25 @@ $this->app->bind(RevalidationServiceInterface::class, NextRevalidationService::c
 
 ### 7.2 الأدوار
 
-| الدور | الوصف |
-| --- | --- |
-| super\_admin | كل الصلاحيات بما فيها المستخدمين والإعدادات |
-| editor | إنشاء وتعديل ونشر كل المحتوى |
-| author | إنشاء وتعديل مقالاته هو فقط بدون نشر |
-| support | عرض ومتابعة طلبات التواصل فقط |
+| الدور       | الوصف                                       |
+| ----------- | ------------------------------------------- |
+| super_admin | كل الصلاحيات بما فيها المستخدمين والإعدادات |
+| editor      | إنشاء وتعديل ونشر كل المحتوى                |
+| author      | إنشاء وتعديل مقالاته هو فقط بدون نشر        |
+| support     | عرض ومتابعة طلبات التواصل فقط               |
 
 ### 7.3 مصفوفة الصلاحيات
 
 صيغة الصلاحية: `resource.action` مثل `posts.create` و `posts.publish`.
 
-| الوحدة | super\_admin | editor | author | support |
-| --- | --- | --- | --- | --- |
-| الصفحات / المميزات / الباقات / FAQ / الشركاء / التكاملات | CRUD | CRUD | — | — |
-| المدونة | CRUD + نشر | CRUD + نشر | CRUD (الخاص به) | — |
-| التوثيق | CRUD + نشر | CRUD + نشر | — | — |
-| طلبات التواصل | CRUD | عرض | — | عرض + تحديث |
-| الإعدادات | CRUD | عرض | — | — |
-| المستخدمين والأدوار | CRUD | — | — | — |
+| الوحدة                                                   | super_admin | editor     | author          | support     |
+| -------------------------------------------------------- | ----------- | ---------- | --------------- | ----------- |
+| الصفحات / المميزات / الباقات / FAQ / الشركاء / التكاملات | CRUD        | CRUD       | —               | —           |
+| المدونة                                                  | CRUD + نشر  | CRUD + نشر | CRUD (الخاص به) | —           |
+| التوثيق                                                  | CRUD + نشر  | CRUD + نشر | —               | —           |
+| طلبات التواصل                                            | CRUD        | عرض        | —               | عرض + تحديث |
+| الإعدادات                                                | CRUD        | عرض        | —               | —           |
+| المستخدمين والأدوار                                      | CRUD        | —          | —               | —           |
 
 كل Model ليه **Policy**، وبتتفحص في FormRequest أو عبر `authorize` في الـ Controller.
 
@@ -273,36 +291,36 @@ $this->app->bind(RevalidationServiceInterface::class, NextRevalidationService::c
 ### 8.1 اتفاقيات عامة
 
 - Engine: InnoDB، و Charset: `utf8mb4` و Collation: `utf8mb4_unicode_ci`.
-- المفتاح الأساسي `id` (bigint unsigned)، و`timestamps` في كل الجداول، و`softDeletes` للمحتوى الأساسي (pages, posts, doc\_articles).
+- المفتاح الأساسي `id` (bigint unsigned)، و`timestamps` في كل الجداول، و`softDeletes` للمحتوى الأساسي (pages, posts, doc_articles).
 - حالة المحتوى عبر Enum `ContentStatus`: `draft` / `published` / `archived` مع عمود `published_at`.
 - الترتيب اليدوي عبر `sort_order` (unsigned int).
-- البيانات المرنة (النقاط، الـ blocks، الوسوم) في أعمدة `JSON`.
+- البيانات المرنة (النقاط، الـ blocks، الوسام) في أعمدة `JSON`.
 - `slug` فريد (unique) في أي جدول بيظهر في URL.
 - FULLTEXT index على `posts (title, excerpt, content)` و `doc_articles (title, content)` للبحث.
 - كل Foreign Key له index و `onDelete` محدد (cascade للأبناء، restrict للمراجع المشتركة).
 
 ### 8.2 الجداول
 
-| الجدول | الأعمدة الأساسية | ملاحظات |
-| --- | --- | --- |
-| users | name, email (unique), password, is\_active, last\_login\_at | الأدوار عبر spatie |
-| pages | slug (unique), title, seo\_title, seo\_description, status, published\_at | home, about, ... |
-| page\_blocks | page\_id, type, data (JSON), sort\_order, is\_visible | أنواع: hero, features\_grid, steps, stats, faq, cta, ... |
-| feature\_categories | name, slug, sort\_order | المبيعات، التواصل، الذكاء الاصطناعي، الإدارة والأمان |
-| features | category\_id, title, slug, summary, description, points (JSON), how\_it\_works (JSON), icon, sort\_order, status | 14 قدرة |
-| plans | name, slug, description, price\_monthly, price\_yearly, currency, trial\_days, max\_sales\_users, max\_leads, features (JSON), is\_featured, badge, cta\_url, sort\_order, status | الأسعار decimal(10,2) |
-| faqs | group, question, answer, sort\_order, status |  |
-| partners | name, url, sort\_order, status | الشعار عبر media |
-| integrations | title, slug, description, tags (JSON), icon, sort\_order, status | ERP، تاجر لينك، بوابات الدفع |
-| post\_categories | name, slug, sort\_order |  |
-| posts | category\_id, author\_id, title, slug, excerpt, content, reading\_time, seo\_title, seo\_description, status, published\_at | FULLTEXT |
-| doc\_sections | parent\_id (nullable), title, slug, icon, sort\_order, status | شجرة بمستويين أو أكتر |
-| doc\_articles | section\_id, title, slug, excerpt, content (LONGTEXT markdown), version, status, sort\_order, published\_at | unique (section\_id, slug) و FULLTEXT |
-| contact\_requests | name, phone, email (nullable), message, source, status, assigned\_to, notes, ip, user\_agent | الحالات: new, in\_progress, done, spam |
-| settings | key (unique), value (JSON), group, is\_public | الإعدادات العامة بتتعرض للفرونت |
-| media | (spatie medialibrary) | صور المقالات والشركاء والصفحات |
-| roles, permissions, ... | (spatie permission) |  |
-| personal\_access\_tokens | (sanctum) |  |
+| الجدول                  | الأعمدة الأساسية                                                                                                                                                         | ملاحظات                                                 |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| users                   | name, email (unique), password, is_active, last_login_at                                                                                                                 | الأدوار عبر spatie                                      |
+| pages                   | slug (unique), title, seo_title, seo_description, status, published_at                                                                                                   | home, about, ...                                        |
+| page_blocks             | page_id, type, data (JSON), sort_order, is_visible                                                                                                                       | أنواع: hero, features_grid, steps, stats, faq, cta, ... |
+| feature_categories      | name, slug, sort_order                                                                                                                                                   | المبيعات، التواصل، الذكاء الاصطناعي، الإدارة والأمان    |
+| features                | category_id, title, slug, summary, description, points (JSON), how_it_works (JSON), icon, sort_order, status                                                             | 14 قدرة                                                 |
+| plans                   | name, slug, description, price_monthly, price_yearly, currency, trial_days, max_sales_users, max_leads, features (JSON), is_featured, badge, cta_url, sort_order, status | الأسعار decimal(10,2)                                   |
+| faqs                    | group, question, answer, sort_order, status                                                                                                                              |                                                         |
+| partners                | name, url, sort_order, status                                                                                                                                            | الشعار عبر media                                        |
+| integrations            | title, slug, description, tags (JSON), icon, sort_order, status                                                                                                          | ERP، تاجر لينك، بوابات الدفع                            |
+| post_categories         | name, slug, sort_order                                                                                                                                                   |                                                         |
+| posts                   | category_id, author_id, title, slug, excerpt, content, reading_time, seo_title, seo_description, status, published_at                                                    | FULLTEXT                                                |
+| doc_sections            | parent_id (nullable), title, slug, icon, sort_order, status                                                                                                              | شجرة بمستويين أو أكتر                                   |
+| doc_articles            | section_id, title, slug, excerpt, content (LONGTEXT markdown), version, status, sort_order, published_at                                                                 | unique (section_id, slug) و FULLTEXT                    |
+| contact_requests        | name, phone, email (nullable), message, source, status, assigned_to, notes, ip, user_agent                                                                               | الحالات: new, in_progress, done, spam                   |
+| settings                | key (unique), value (JSON), group, is_public                                                                                                                             | الإعدادات العامة بتتعرض للفرونت                         |
+| media                   | (spatie medialibrary)                                                                                                                                                    | صور المقالات والشركاء والصفحات                          |
+| roles, permissions, ... | (spatie permission)                                                                                                                                                      |                                                         |
+| personal_access_tokens  | (sanctum)                                                                                                                                                                |                                                         |
 
 ### 8.3 العلاقات
 
@@ -326,25 +344,25 @@ doc_sections 1─N doc_articles        media (polymorphic) ─ posts, partners, 
 
 ### 9.2 Public API (بدون مصادقة)
 
-| Method | Endpoint | الوصف | Cache tag |
-| --- | --- | --- | --- |
-| GET | `/pages/{slug}` | صفحة مع الـ blocks مرتبة | pages |
-| GET | `/feature-categories` | تصنيفات المميزات | features |
-| GET | `/features` | المميزات، `filter[category]` | features |
-| GET | `/features/{slug}` | تفاصيل ميزة | features |
-| GET | `/plans` | الباقات والأسعار | plans |
-| GET | `/faqs` | الأسئلة الشائعة، `filter[group]` | faqs |
-| GET | `/partners` | الشركاء والعملاء | partners |
-| GET | `/integrations` | التكاملات | integrations |
-| GET | `/post-categories` | تصنيفات المدونة | posts |
-| GET | `/posts` | المقالات مع pagination، `filter[category]` و `filter[q]` | posts |
-| GET | `/posts/{slug}` | مقال واحد | posts |
-| GET | `/docs/tree` | شجرة أقسام ومقالات التوثيق للـ sidebar | docs |
-| GET | `/docs/{section}/{article}` | مقال توثيق | docs |
-| GET | `/docs/search?q=` | بحث في التوثيق | بدون cache طويل |
-| GET | `/settings` | الإعدادات العامة (لوجو، واتساب، سوشيال، SEO عام) | settings |
-| GET | `/sitemap` | كل الـ slugs للصفحات والمقالات والتوثيق | sitemap |
-| POST | `/contact-requests` | إرسال طلب تواصل (rate limited + honeypot) | — |
+| Method | Endpoint                    | الوصف                                                    | Cache tag       |
+| ------ | --------------------------- | -------------------------------------------------------- | --------------- |
+| GET    | `/pages/{slug}`             | صفحة مع الـ blocks مرتبة                                 | pages           |
+| GET    | `/feature-categories`       | تصنيفات المميزات                                         | features        |
+| GET    | `/features`                 | المميزات، `filter[category]`                             | features        |
+| GET    | `/features/{slug}`          | تفاصيل ميزة                                              | features        |
+| GET    | `/plans`                    | الباقات والأسعار                                         | plans           |
+| GET    | `/faqs`                     | الأسئلة الشائعة، `filter[group]`                         | faqs            |
+| GET    | `/partners`                 | الشركاء والعملاء                                         | partners        |
+| GET    | `/integrations`             | التكاملات                                                | integrations    |
+| GET    | `/post-categories`          | تصنيفات المدونة                                          | posts           |
+| GET    | `/posts`                    | المقالات مع pagination، `filter[category]` و `filter[q]` | posts           |
+| GET    | `/posts/{slug}`             | مقال واحد                                                | posts           |
+| GET    | `/docs/tree`                | شجرة أقسام ومقالات التوثيق للـ sidebar                   | docs            |
+| GET    | `/docs/{section}/{article}` | مقال توثيق                                               | docs            |
+| GET    | `/docs/search?q=`           | بحث في التوثيق                                           | بدون cache طويل |
+| GET    | `/settings`                 | الإعدادات العامة (لوجو، واتساب، سوشيال، SEO عام)         | settings        |
+| GET    | `/sitemap`                  | كل الـ slugs للصفحات والمقالات والتوثيق                  | sitemap         |
+| POST   | `/contact-requests`         | إرسال طلب تواصل (rate limited + honeypot)                | —               |
 
 ### 9.3 Admin API (Bearer token + صلاحيات)
 
@@ -352,33 +370,33 @@ doc_sections 1─N doc_articles        media (polymorphic) ─ posts, partners, 
 
 **المصادقة**
 
-| Method | Endpoint | الوصف |
-| --- | --- | --- |
-| POST | `/auth/login` | تسجيل الدخول وإرجاع الـ token |
-| POST | `/auth/logout` | إلغاء الـ token الحالي |
-| GET | `/auth/me` | بيانات المستخدم وصلاحياته |
-| PUT | `/auth/password` | تغيير كلمة المرور |
+| Method | Endpoint         | الوصف                         |
+| ------ | ---------------- | ----------------------------- |
+| POST   | `/auth/login`    | تسجيل الدخول وإرجاع الـ token |
+| POST   | `/auth/logout`   | إلغاء الـ token الحالي        |
+| GET    | `/auth/me`       | بيانات المستخدم وصلاحياته     |
+| PUT    | `/auth/password` | تغيير كلمة المرور             |
 
 **الموارد (index, store, show, update, destroy)** `pages`، `pages/{page}/blocks`، `feature-categories`، `features`، `plans`، `faqs`، `partners`، `integrations`، `post-categories`، `posts`، `doc-sections`، `doc-articles`، `users`
 
 **موارد بصلاحيات محدودة**
 
-| Method | Endpoint | الوصف |
-| --- | --- | --- |
+| Method          | Endpoint                                      | الوصف                                                               |
+| --------------- | --------------------------------------------- | ------------------------------------------------------------------- |
 | GET, GET, PATCH | `/contact-requests`، `/contact-requests/{id}` | عرض وتحديث الحالة والتعيين والملاحظات (بدون إنشاء أو حذف من الأدمن) |
-| GET, PUT | `/settings` | قراءة وتحديث الإعدادات |
-| GET | `/roles` | قائمة الأدوار والصلاحيات |
+| GET, PUT        | `/settings`                                   | قراءة وتحديث الإعدادات                                              |
+| GET             | `/roles`                                      | قائمة الأدوار والصلاحيات                                            |
 
 **إجراءات إضافية**
 
-| Method | Endpoint | الوصف |
-| --- | --- | --- |
-| PATCH | `/{resource}/{id}/publish` و `/unpublish` | للمقالات والتوثيق والصفحات |
-| PUT | `/{resource}/reorder` | إعادة الترتيب، body: `{ "ids": [3, 1, 2] }` |
-| PUT | `/pages/{page}/blocks/reorder` | ترتيب الـ blocks |
-| POST | `/media` | رفع صورة (multipart) |
-| DELETE | `/media/{id}` | حذف صورة |
-| POST | `/cache/flush` | مسح الكاش (super\_admin فقط) |
+| Method | Endpoint                                  | الوصف                                       |
+| ------ | ----------------------------------------- | ------------------------------------------- |
+| PATCH  | `/{resource}/{id}/publish` و `/unpublish` | للمقالات والتوثيق والصفحات                  |
+| PUT    | `/{resource}/reorder`                     | إعادة الترتيب، body: `{ "ids": [3, 1, 2] }` |
+| PUT    | `/pages/{page}/blocks/reorder`            | ترتيب الـ blocks                            |
+| POST   | `/media`                                  | رفع صورة (multipart)                        |
+| DELETE | `/media/{id}`                             | حذف صورة                                    |
+| POST   | `/cache/flush`                            | مسح الكاش (super_admin فقط)                 |
 
 ### 9.4 أمثلة
 
@@ -399,15 +417,21 @@ doc_sections 1─N doc_articles        media (polymorphic) ─ posts, partners, 
 ```json
 // Response 200
 {
-  "success": true,
-  "message": "تم تسجيل الدخول",
-  "data": {
-    "token": "1|abc...",
-    "token_type": "Bearer",
-    "expires_at": "2026-11-20T10:00:00Z",
-    "user": { "id": 1, "name": "Admin", "email": "admin@saleszawy.com", "roles": ["super_admin"], "permissions": ["posts.create"] }
-  },
-  "meta": {}
+    "success": true,
+    "message": "تم تسجيل الدخول",
+    "data": {
+        "token": "1|abc...",
+        "token_type": "Bearer",
+        "expires_at": "2026-11-20T10:00:00Z",
+        "user": {
+            "id": 1,
+            "name": "Admin",
+            "email": "admin@saleszawy.com",
+            "roles": ["super_admin"],
+            "permissions": ["posts.create"]
+        }
+    },
+    "meta": {}
 }
 ```
 
@@ -433,33 +457,33 @@ Admin يعدل/ينشر محتوى
 
 ### 10.3 خريطة الـ Tags
 
-| الـ Model | الـ Tags |
-| --- | --- |
-| Page / PageBlock | pages, page:{slug} |
-| Feature / FeatureCategory | features |
-| Plan | plans |
-| Faq | faqs |
-| Partner | partners |
-| Integration | integrations |
-| Post / PostCategory | posts, post:{slug} |
-| DocSection / DocArticle | docs, doc:{section}/{article} |
-| Setting | settings |
+| الـ Model                 | الـ Tags                      |
+| ------------------------- | ----------------------------- |
+| Page / PageBlock          | pages, page:{slug}            |
+| Feature / FeatureCategory | features                      |
+| Plan                      | plans                         |
+| Faq                       | faqs                          |
+| Partner                   | partners                      |
+| Integration               | integrations                  |
+| Post / PostCategory       | posts, post:{slug}            |
+| DocSection / DocArticle   | docs, doc:{section}/{article} |
+| Setting                   | settings                      |
 
 **المعاينة (Preview):** الفرونت يستخدم Admin token ويقرأ المسودات من Admin API (`GET /admin/posts/{id}`)، فمفيش حاجة تظهر للعامة قبل النشر.
 
 ## 11. الأمان
 
-| الموضوع | الإجراء |
-| --- | --- |
-| Rate limiting | Public: 60/دقيقة لكل IP — contact-requests: 5/دقيقة لكل IP — login: 5/دقيقة لكل email+IP — Admin: 120/دقيقة لكل مستخدم |
-| CORS | الدومينات المسموحة من `.env` فقط |
-| طلبات التواصل | Honeypot + validation صارم، وإضافة Turnstile/reCAPTCHA لو ظهر spam |
-| المحتوى | تنقية أي HTML داخل (Purifier) لو المحرر بيطلع HTML، والفرونت يعمل sanitize عند العرض |
-| رفع الملفات | whitelist للأنواع (jpg, png, webp)، والحد الأقصى 5MB، ومنع SVG إلا بعد تنقيته، وتحويل الصور لـ webp |
-| كلمات المرور | Hashing افتراضي من Laravel، وحد أدنى 10 حروف، وقفل مؤقت بعد محاولات فاشلة |
-| الإعدادات | الأسرار في `.env` فقط، و`APP_DEBUG=false` في الإنتاج، وHTTPS إجباري |
-| Mass assignment | `$fillable` صريحة في كل Model |
-| Audit log | مرحلة لاحقة عبر spatie/laravel-activitylog لتسجيل من عدّل إيه ومتى |
+| الموضوع         | الإجراء                                                                                                                |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Rate limiting   | Public: 60/دقيقة لكل IP — contact-requests: 5/دقيقة لكل IP — login: 5/دقيقة لكل email+IP — Admin: 120/دقيقة لكل مستخدم |
+| CORS            | الدومينات المسموحة من `.env` فقط                                                                                       |
+| طلبات التواصل   | Honeypot + validation صارم، وإضافة Turnstile/reCAPTCHA لو ظهر spam                                                     |
+| المحتوى         | تنقية أي HTML داخل (Purifier) لو المحرر بيطلع HTML، والفرونت يعمل sanitize عند العرض                                   |
+| رفع الملفات     | whitelist للأنواع (jpg, png, webp)، والحد الأقصى 5MB، ومنع SVG إلا بعد تنقيته، وتحويل الصور لـ webp                    |
+| كلمات المرور    | Hashing افتراضي من Laravel، وحد أدنى 10 حروف، وقفل مؤقت بعد محاولات فاشلة                                              |
+| الإعدادات       | الأسرار في `.env` فقط، و`APP_DEBUG=false` في الإنتاج، وHTTPS إجباري                                                    |
+| Mass assignment | `$fillable` صريحة في كل Model                                                                                          |
+| Audit log       | مرحلة لاحقة عبر spatie/laravel-activitylog لتسجيل من عدّل إيه ومتى                                                     |
 
 ## 12. الاختبارات والجودة
 
@@ -494,12 +518,12 @@ Admin يعدل/ينشر محتوى
 
 ## 14. خطة التنفيذ
 
-| المرحلة | المحتوى | المخرجات |
-| --- | --- | --- |
-| 1. التأسيس | تثبيت الحزم، ApiResponse و exception handling، Sanctum، الأدوار، CI | مشروع جاهز + endpoint للـ login |
-| 2. المحتوى الأساسي | Migrations و Models و Factories و Seeders (بمحتوى الموقع الحالي)، Public + Admin لـ features, plans, faqs, partners, integrations, settings | أول endpoints ينفع الفرونت يشتغل عليها |
-| 3. الصفحات والـ Blocks | pages و page\_blocks مع الترتيب | الرئيسية ومن نحن من الـ API |
-| 4. المدونة | posts و categories و media و بحث | المدونة كاملة |
-| 5. بوابة التوثيق | doc\_sections و doc\_articles، الشجرة، البحث | Docs portal كامل |
-| 6. التواصل | contact\_requests + rate limits + honeypot | فورم التواصل شغال |
-| 7. الإنتاج | Cache، Revalidation، Hardening، OpenAPI، تسليم للفرونت | جاهز للإطلاق |
+| المرحلة                | المحتوى                                                                                                                                     | المخرجات                               |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| 1. التأسيس             | تثبيت الحزم، ApiResponse و exception handling، Sanctum، الأدوار، CI                                                                         | مشروع جاهز + endpoint للـ login        |
+| 2. المحتوى الأساسي     | Migrations و Models و Factories و Seeders (بمحتوى الموقع الحالي)، Public + Admin لـ features, plans, faqs, partners, integrations, settings | أول endpoints ينفع الفرونت يشتغل عليها |
+| 3. الصفحات والـ Blocks | pages و page_blocks مع الترتيب                                                                                                              | الرئيسية ومن نحن من الـ API            |
+| 4. المدونة             | posts و categories و media و بحث                                                                                                            | المدونة كاملة                          |
+| 5. بوابة التوثيق       | doc_sections و doc_articles، الشجرة، البحث                                                                                                  | Docs portal كامل                       |
+| 6. التواصل             | contact_requests + rate limits + honeypot                                                                                                   | فورم التواصل شغال                      |
+| 7. الإنتاج             | Cache، Revalidation، Hardening، OpenAPI، تسليم للفرونت                                                                                      | جاهز للإطلاق                           |
