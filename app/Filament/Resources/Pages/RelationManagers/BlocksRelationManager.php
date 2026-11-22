@@ -10,6 +10,7 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Group;
@@ -18,6 +19,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use Illuminate\Validation\Rules\Unique;
 
 class BlocksRelationManager extends RelationManager
 {
@@ -38,6 +40,15 @@ class BlocksRelationManager extends RelationManager
                 ->required()
                 ->live()
                 ->disabledOn('edit'),
+            TextInput::make('key')
+                ->label('المعرّف (key)')
+                ->helperText('بيتستخدم في الرابط: /pages/{page}/blocks/{key}. سيبه فاضي ويتولّد تلقائياً. ما تغيّروش بعد ما الفرونت يستخدمه.')
+                ->alphaDash()
+                ->maxLength(100)
+                ->unique(
+                    ignoreRecord: true,
+                    modifyRuleUsing: fn (Unique $rule) => $rule->where('page_id', $this->getOwnerRecord()->getKey()),
+                ),
             Toggle::make('is_visible')
                 ->label('ظاهر في الموقع')
                 ->default(true),
@@ -56,6 +67,7 @@ class BlocksRelationManager extends RelationManager
             ->recordTitleAttribute('type')
             ->columns([
                 TextColumn::make('type')->label('القسم')->badge(),
+                TextColumn::make('key')->label('المعرّف')->badge()->color('gray')->copyable(),
                 TextColumn::make('data.title')->label('العنوان')->limit(60)->placeholder('—'),
                 ToggleColumn::make('is_visible')->label('ظاهر'),
             ])

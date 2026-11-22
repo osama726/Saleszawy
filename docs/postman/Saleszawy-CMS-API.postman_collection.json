@@ -15,6 +15,11 @@
             "key": "slug",
             "value": "home",
             "type": "string"
+        },
+        {
+            "key": "blockKey",
+            "value": "faq",
+            "type": "string"
         }
     ],
     "item": [
@@ -66,7 +71,7 @@
                                     "value": "application/json"
                                 }
                             ],
-                            "body": "{\n  \"success\": true,\n  \"message\": \"\",\n  \"data\": {\n    \"id\": 1,\n    \"slug\": \"home\",\n    \"title\": \"سيلزواي\",\n    \"seo\": {\n      \"title\": \"سيلزواي - نظام إدارة علاقات العملاء\",\n      \"description\": \"الوصف الخاص بمحركات البحث\"\n    },\n    \"published_at\": \"2026-11-22T12:00:00+00:00\",\n    \"updated_at\": \"2026-11-22T12:30:00+00:00\",\n    \"blocks\": [\n      {\n        \"id\": 1,\n        \"type\": \"hero\",\n        \"data\": {\n          \"headline\": \"أكبر منصة مبيعات في الشرق الأوسط\"\n        }\n      }\n    ]\n  },\n  \"meta\": {}\n}"
+                            "body": "{\n  \"success\": true,\n  \"message\": \"\",\n  \"data\": {\n    \"id\": 1,\n    \"slug\": \"home\",\n    \"title\": \"سيلزواي\",\n    \"seo\": {\n      \"title\": \"سيلزواي - نظام إدارة علاقات العملاء\",\n      \"description\": \"الوصف الخاص بمحركات البحث\"\n    },\n    \"published_at\": \"2026-11-22T12:00:00+00:00\",\n    \"updated_at\": \"2026-11-22T12:30:00+00:00\",\n    \"blocks\": [\n      {\n        \"id\": 1,\n        \"key\": \"hero\",\n        \"type\": \"hero\",\n        \"data\": {\n          \"headline\": \"أكبر منصة مبيعات في الشرق الأوسط\"\n        }\n      }\n    ]\n  },\n  \"meta\": {}\n}"
                         },
                         {
                             "name": "Page not found",
@@ -119,6 +124,122 @@
                                     "    pm.expect(body.success).to.eql(true);",
                                     "    pm.expect(body.data).to.have.property('slug');",
                                     "    pm.expect(body.data).to.have.property('blocks');",
+                                    "  });",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get published page block by key",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/pages/{{slug}}/blocks/{{blockKey}}",
+                            "host": ["{{baseUrl}}"],
+                            "path": [
+                                "v1",
+                                "pages",
+                                "{{slug}}",
+                                "blocks",
+                                "{{blockKey}}"
+                            ]
+                        },
+                        "description": "Returns one visible block from a published page using the block key. Hidden, unknown, or missing page/block keys return 404."
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v1/pages/home/blocks/faq",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "v1",
+                                        "pages",
+                                        "home",
+                                        "blocks",
+                                        "faq"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"success\": true,\n  \"message\": \"\",\n  \"data\": {\n    \"id\": 1,\n    \"key\": \"faq\",\n    \"type\": \"faq\",\n    \"data\": {\n      \"title\": \"FAQ\"\n    }\n  },\n  \"meta\": {}\n}"
+                        },
+                        {
+                            "name": "Block not found",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v1/pages/home/blocks/nope",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": [
+                                        "v1",
+                                        "pages",
+                                        "home",
+                                        "blocks",
+                                        "nope"
+                                    ]
+                                }
+                            },
+                            "status": "Not Found",
+                            "code": 404,
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"success\": false,\n  \"message\": \"العنصر المطلوب غير موجود\",\n  \"code\": \"NOT_FOUND\"\n}"
+                        }
+                    ],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status is 200 or 404', function () {",
+                                    "  pm.expect([200, 404]).to.include(pm.response.code);",
+                                    "});",
+                                    "",
+                                    "if (pm.response.code === 200) {",
+                                    "  pm.test('Block data is valid', function () {",
+                                    "    const body = pm.response.json();",
+                                    "    pm.expect(body.success).to.eql(true);",
+                                    "    pm.expect(body.data).to.have.property('key');",
+                                    "    pm.expect(body.data).to.have.property('type');",
+                                    "    pm.expect(body.data).to.have.property('data');",
                                     "  });",
                                     "}"
                                 ]

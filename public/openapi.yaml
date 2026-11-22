@@ -90,6 +90,69 @@ paths:
                 message: حدث خطأ غير متوقع
                 code: SERVER_ERROR
 
+  /v1/pages/{slug}/blocks/{key}:
+    get:
+      tags:
+        - Pages
+      summary: جلب بلوك واحد من صفحة منشورة
+      description: يعيد بلوكاً مرئياً واحداً حسب المعرّف key داخل الصفحة المنشورة.
+      operationId: getPublishedPageBlock
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          description: المعرّف النصي للصفحة
+          schema:
+            type: string
+            example: home
+        - name: key
+          in: path
+          required: true
+          description: المعرّف الفريد للبلوك داخل الصفحة، مثل faq أو cta-2
+          schema:
+            type: string
+            pattern: "^[A-Za-z0-9_-]+$"
+            example: faq
+      responses:
+        "200":
+          description: تم جلب البلوك بنجاح
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageBlockResponse"
+              example:
+                success: true
+                message: ""
+                data:
+                  id: 1
+                  key: faq
+                  type: faq
+                  data:
+                    title: FAQ
+                meta: {}
+        "404":
+          description: الصفحة أو البلوك غير موجود أو البلوك مخفي
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                success: false
+                message: العنصر المطلوب غير موجود
+                code: NOT_FOUND
+        "429":
+          description: تجاوز حد الطلبات المسموح
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: خطأ داخلي في الخادم
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
     PageResponse:
@@ -171,6 +234,7 @@ components:
       type: object
       required:
         - id
+        - key
         - type
         - data
       properties:
@@ -178,6 +242,11 @@ components:
           type: integer
           format: int64
           example: 1
+        key:
+          type: string
+          description: معرّف البلوك الفريد داخل الصفحة
+          pattern: "^[A-Za-z0-9_-]+$"
+          example: faq
         type:
           $ref: "#/components/schemas/BlockType"
         data:
@@ -241,3 +310,25 @@ components:
             type: array
             items:
               type: string
+
+    PageBlockResponse:
+      type: object
+      required:
+        - success
+        - data
+        - meta
+      properties:
+        success:
+          type: boolean
+          enum:
+            - true
+          example: true
+        message:
+          type: string
+          example: ""
+        data:
+          $ref: "#/components/schemas/PageBlock"
+        meta:
+          type: object
+          additionalProperties: true
+          example: {}

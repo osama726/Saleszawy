@@ -20,6 +20,7 @@ final class PageBlockResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'key' => $this->key,
             'type' => $this->type->value,
             'data' => $this->data ?: (object) [],
         ];
