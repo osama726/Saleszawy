@@ -1,0 +1,243 @@
+openapi: 3.0.3
+
+info:
+  title: Saleszawy CMS API
+  description: API عامة لجلب صفحات CMS المنشورة ومحتوياتها.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000/api
+    description: بيئة التطوير المحلية
+
+tags:
+  - name: Pages
+    description: صفحات الموقع المنشورة
+
+paths:
+  /v1/pages/{slug}:
+    get:
+      tags:
+        - Pages
+      summary: جلب صفحة منشورة بالـ slug
+      description: يعيد الصفحة المنشورة مع البلوكات المرئية فقط مرتبة حسب sort_order.
+      operationId: getPublishedPage
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          description: المعرّف النصي الفريد للصفحة
+          schema:
+            type: string
+            example: home
+      responses:
+        "200":
+          description: تم جلب الصفحة بنجاح
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageResponse"
+              example:
+                success: true
+                message: ""
+                data:
+                  id: 1
+                  slug: home
+                  title: سيلزواي
+                  seo:
+                    title: سيلزواي - نظام إدارة علاقات العملاء
+                    description: الوصف الخاص بمحركات البحث
+                  published_at: "2026-11-22T12:00:00+00:00"
+                  updated_at: "2026-11-22T12:30:00+00:00"
+                  blocks:
+                    - id: 1
+                      type: hero
+                      data:
+                        headline: أكبر منصة مبيعات في الشرق الأوسط
+                meta: {}
+        "404":
+          description: الصفحة غير موجودة أو غير منشورة
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                success: false
+                message: العنصر المطلوب غير موجود
+                code: NOT_FOUND
+        "429":
+          description: تجاوز حد الطلبات المسموح
+          headers:
+            Retry-After:
+              description: عدد الثواني حتى يمكن إعادة المحاولة
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                success: false
+                message: عدد الطلبات كبير، حاول مرة أخرى بعد قليل
+                code: TOO_MANY_REQUESTS
+        "500":
+          description: خطأ داخلي في الخادم
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                success: false
+                message: حدث خطأ غير متوقع
+                code: SERVER_ERROR
+
+components:
+  schemas:
+    PageResponse:
+      type: object
+      required:
+        - success
+        - data
+        - meta
+      properties:
+        success:
+          type: boolean
+          enum:
+            - true
+          example: true
+        message:
+          type: string
+          example: ""
+        data:
+          $ref: "#/components/schemas/Page"
+        meta:
+          type: object
+          additionalProperties: true
+          example: {}
+
+    Page:
+      type: object
+      required:
+        - id
+        - slug
+        - title
+        - seo
+        - published_at
+        - updated_at
+        - blocks
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        slug:
+          type: string
+          example: home
+        title:
+          type: string
+          example: سيلزواي
+        seo:
+          $ref: "#/components/schemas/Seo"
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2026-11-22T12:00:00+00:00"
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2026-11-22T12:30:00+00:00"
+        blocks:
+          type: array
+          items:
+            $ref: "#/components/schemas/PageBlock"
+
+    Seo:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+          nullable: true
+          example: سيلزواي - نظام إدارة علاقات العملاء
+        description:
+          type: string
+          nullable: true
+          example: الوصف الخاص بمحركات البحث
+
+    PageBlock:
+      type: object
+      required:
+        - id
+        - type
+        - data
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        type:
+          $ref: "#/components/schemas/BlockType"
+        data:
+          type: object
+          additionalProperties: true
+          description: بيانات البلوك تختلف حسب نوع البلوك
+          example:
+            headline: أكبر منصة مبيعات في الشرق الأوسط
+
+    BlockType:
+      type: string
+      description: أنواع البلوكات المتاحة في صفحات CMS
+      enum:
+        - hero
+        - partners
+        - problem_solution
+        - showcase
+        - features_explorer
+        - pbx
+        - steps
+        - stats
+        - comparison
+        - pricing
+        - integrations
+        - faq
+        - blog
+        - about
+        - contact
+        - cta
+
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - message
+        - code
+      properties:
+        success:
+          type: boolean
+          enum:
+            - false
+          example: false
+        message:
+          type: string
+          example: العنصر المطلوب غير موجود
+        code:
+          type: string
+          enum:
+            - NOT_FOUND
+            - TOO_MANY_REQUESTS
+            - VALIDATION_ERROR
+            - UNAUTHENTICATED
+            - FORBIDDEN
+            - HTTP_ERROR
+            - SERVER_ERROR
+          example: NOT_FOUND
+        errors:
+          type: object
+          nullable: true
+          additionalProperties:
+            type: array
+            items:
+              type: string

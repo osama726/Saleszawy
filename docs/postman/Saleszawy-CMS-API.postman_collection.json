@@ -1,0 +1,132 @@
+{
+    "info": {
+        "name": "Saleszawy CMS API",
+        "description": "Postman collection for the Saleszawy CMS public API.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "saleszawy-cms"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:8000/api",
+            "type": "string"
+        },
+        {
+            "key": "slug",
+            "value": "home",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Pages",
+            "description": "Endpoints for published CMS pages.",
+            "item": [
+                {
+                    "name": "Get published page by slug",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/pages/{{slug}}",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["v1", "pages", "{{slug}}"]
+                        },
+                        "description": "Returns a published page and its visible blocks. The page must have published status and a published_at date that is not in the future."
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v1/pages/home",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": ["v1", "pages", "home"]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"success\": true,\n  \"message\": \"\",\n  \"data\": {\n    \"id\": 1,\n    \"slug\": \"home\",\n    \"title\": \"سيلزواي\",\n    \"seo\": {\n      \"title\": \"سيلزواي - نظام إدارة علاقات العملاء\",\n      \"description\": \"الوصف الخاص بمحركات البحث\"\n    },\n    \"published_at\": \"2026-11-22T12:00:00+00:00\",\n    \"updated_at\": \"2026-11-22T12:30:00+00:00\",\n    \"blocks\": [\n      {\n        \"id\": 1,\n        \"type\": \"hero\",\n        \"data\": {\n          \"headline\": \"أكبر منصة مبيعات في الشرق الأوسط\"\n        }\n      }\n    ]\n  },\n  \"meta\": {}\n}"
+                        },
+                        {
+                            "name": "Page not found",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/v1/pages/not-found",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": ["v1", "pages", "not-found"]
+                                }
+                            },
+                            "status": "Not Found",
+                            "code": 404,
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"success\": false,\n  \"message\": \"العنصر المطلوب غير موجود\",\n  \"code\": \"NOT_FOUND\"\n}"
+                        }
+                    ],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status is 200 or 404', function () {",
+                                    "  pm.expect([200, 404]).to.include(pm.response.code);",
+                                    "});",
+                                    "",
+                                    "pm.test('Response has unified JSON envelope', function () {",
+                                    "  pm.response.to.have.header('Content-Type');",
+                                    "  const body = pm.response.json();",
+                                    "  pm.expect(body).to.have.property('success');",
+                                    "  pm.expect(body).to.have.property('message');",
+                                    "});",
+                                    "",
+                                    "if (pm.response.code === 200) {",
+                                    "  pm.test('Page data is valid', function () {",
+                                    "    const body = pm.response.json();",
+                                    "    pm.expect(body.success).to.eql(true);",
+                                    "    pm.expect(body.data).to.have.property('slug');",
+                                    "    pm.expect(body.data).to.have.property('blocks');",
+                                    "  });",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
