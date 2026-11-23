@@ -10,4 +10,14 @@ final class CacheKeys
     {
         return 'pages:' . $slug;
     }
+
+    public static function plans(): string
+    {
+        return 'plans:list';
+    }
+
+    public static function layout(): string
+    {
+        return 'layout:payload';
+    }
 }

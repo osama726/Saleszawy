@@ -248,6 +248,166 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "Layout",
+            "description": "Header and footer payload endpoints.",
+            "item": [
+                {
+                    "name": "Get complete layout",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/layout",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["v1", "layout"]
+                        },
+                        "description": "Returns header and footer together."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                                    "const body = pm.response.json();",
+                                    "pm.test('Layout contains header and footer', function () {",
+                                    "  pm.expect(body.success).to.eql(true);",
+                                    "  pm.expect(body.data).to.have.property('header');",
+                                    "  pm.expect(body.data).to.have.property('footer');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get header",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/layout/header",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["v1", "layout", "header"]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                                    "const body = pm.response.json();",
+                                    "pm.test('Header shape is valid', function () {",
+                                    "  pm.expect(body.success).to.eql(true);",
+                                    "  pm.expect(body.data).to.have.property('brand');",
+                                    "  pm.expect(body.data).to.have.property('links');",
+                                    "  pm.expect(body.data).to.have.property('actions');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get footer",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/layout/footer",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["v1", "layout", "footer"]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                                    "const body = pm.response.json();",
+                                    "pm.test('Footer shape is valid', function () {",
+                                    "  pm.expect(body.success).to.eql(true);",
+                                    "  pm.expect(body.data).to.have.property('brand');",
+                                    "  pm.expect(body.data).to.have.property('columns');",
+                                    "  pm.expect(body.data).to.have.property('copyright');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Plans",
+            "description": "Published subscription plans.",
+            "item": [
+                {
+                    "name": "List published plans",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/plans",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["v1", "plans"]
+                        },
+                        "description": "Returns published plans ordered by sort_order."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                                    "const body = pm.response.json();",
+                                    "pm.test('Plans data is valid', function () {",
+                                    "  pm.expect(body.success).to.eql(true);",
+                                    "  pm.expect(body.data).to.be.an('array');",
+                                    "  if (body.data.length) {",
+                                    "    pm.expect(body.data[0]).to.have.property('price');",
+                                    "    pm.expect(body.data[0]).to.have.property('limits');",
+                                    "    pm.expect(body.data[0]).to.have.property('features');",
+                                    "  }",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

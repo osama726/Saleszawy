@@ -12,6 +12,10 @@ servers:
 tags:
   - name: Pages
     description: صفحات الموقع المنشورة
+  - name: Layout
+    description: بيانات الهيدر والفوتر المشتركة للموقع
+  - name: Plans
+    description: باقات الاشتراك المنشورة
 
 paths:
   /v1/pages/{slug}:
@@ -152,6 +156,78 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/layout:
+    get:
+      tags: [Layout]
+      summary: جلب الهيدر والفوتر معاً
+      operationId: getLayout
+      responses:
+        "200":
+          description: تم جلب بيانات التخطيط بنجاح
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LayoutResponse"
+        "429":
+          description: تجاوز حد الطلبات المسموح
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /v1/layout/header:
+    get:
+      tags: [Layout]
+      summary: جلب الهيدر فقط
+      operationId: getHeader
+      responses:
+        "200":
+          description: تم جلب بيانات الهيدر بنجاح
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HeaderResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /v1/layout/footer:
+    get:
+      tags: [Layout]
+      summary: جلب الفوتر فقط
+      operationId: getFooter
+      responses:
+        "200":
+          description: تم جلب بيانات الفوتر بنجاح
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FooterResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /v1/plans:
+    get:
+      tags: [Plans]
+      summary: جلب باقات الاشتراك المنشورة
+      operationId: listPublishedPlans
+      responses:
+        "200":
+          description: تم جلب الباقات مرتبة حسب sort_order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlansResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
 
 components:
   schemas:
@@ -332,3 +408,246 @@ components:
           type: object
           additionalProperties: true
           example: {}
+
+    LayoutResponse:
+      type: object
+      required:
+        - success
+        - data
+        - meta
+      properties:
+        success:
+          type: boolean
+          enum:
+            - true
+          example: true
+        message:
+          type: string
+          example: ""
+        data:
+          $ref: "#/components/schemas/Layout"
+        meta:
+          type: object
+          additionalProperties: true
+          example: {}
+
+    Layout:
+      type: object
+      required:
+        - header
+        - footer
+      properties:
+        header:
+          $ref: "#/components/schemas/Header"
+        footer:
+          $ref: "#/components/schemas/Footer"
+
+    Header:
+      type: object
+      properties:
+        brand:
+          $ref: "#/components/schemas/Brand"
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/MenuItem"
+        actions:
+          type: array
+          items:
+            $ref: "#/components/schemas/MenuItem"
+
+    HeaderResponse:
+      type: object
+      required: [success, data, meta]
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/Header"
+        meta:
+          type: object
+          additionalProperties: true
+
+    Footer:
+      type: object
+      properties:
+        brand:
+          $ref: "#/components/schemas/Brand"
+        description:
+          type: string
+        columns:
+          type: array
+          items:
+            $ref: "#/components/schemas/FooterColumn"
+        socials:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+        copyright:
+          type: string
+        back_to_top_label:
+          type: string
+        floating_cta:
+          nullable: true
+          type: object
+          properties:
+            label:
+              type: string
+            url:
+              type: string
+
+    FooterResponse:
+      type: object
+      required: [success, data, meta]
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/Footer"
+        meta:
+          type: object
+          additionalProperties: true
+
+    Brand:
+      type: object
+      properties:
+        name:
+          type: string
+        text:
+          type: string
+        badge:
+          nullable: true
+          type: string
+        logo:
+          nullable: true
+          type: string
+        url:
+          type: string
+
+    MenuItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        label:
+          type: string
+        url:
+          type: string
+        kind:
+          type: string
+          enum: [link, button]
+        variant:
+          nullable: true
+          type: string
+          enum: [ghost, primary, outline]
+        new_tab:
+          type: boolean
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/MenuItem"
+
+    FooterColumn:
+      type: object
+      properties:
+        key:
+          type: string
+        title:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/MenuItem"
+
+    Plan:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          nullable: true
+          type: string
+        price:
+          type: object
+          properties:
+            monthly:
+              nullable: true
+              oneOf:
+                - type: integer
+                - type: number
+            yearly:
+              nullable: true
+              oneOf:
+                - type: integer
+                - type: number
+            currency:
+              type: string
+        trial_days:
+          type: integer
+        limits:
+          type: object
+          properties:
+            sales_users:
+              type: integer
+            leads:
+              type: integer
+        features:
+          type: array
+          items:
+            type: string
+        is_featured:
+          type: boolean
+        badge:
+          nullable: true
+          type: string
+        cta:
+          type: object
+          properties:
+            label:
+              nullable: true
+              type: string
+            url:
+              nullable: true
+              type: string
+
+    PlansResponse:
+      type: object
+      required: [success, data, meta]
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Plan"
+        meta:
+          type: object
+          additionalProperties: true
+  responses:
+    TooManyRequests:
+      description: تجاوز حد الطلبات المسموح
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    ServerError:
+      description: خطأ داخلي في الخادم
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
