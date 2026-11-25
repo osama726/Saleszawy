@@ -7,6 +7,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-exif": "*",
+        "ext-intl": "*",
+        "ext-zip": "*",
         "bezhansalleh/filament-shield": "^4.3",
         "dedoc/scramble": "^0.13.55",
         "filament/filament": "^5.11",
