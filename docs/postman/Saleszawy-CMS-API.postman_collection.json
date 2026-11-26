@@ -20,6 +20,11 @@
             "key": "blockKey",
             "value": "faq",
             "type": "string"
+        },
+        {
+            "key": "faqGroup",
+            "value": "general",
+            "type": "string"
         }
     ],
     "item": [
@@ -401,6 +406,99 @@
                                     "    pm.expect(body.data[0]).to.have.property('limits');",
                                     "    pm.expect(body.data[0]).to.have.property('features');",
                                     "  }",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Partners",
+            "description": "Published partners endpoints.",
+            "item": [
+                {
+                    "name": "List published partners",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/partners",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["v1", "partners"]
+                        },
+                        "description": "Returns published partners ordered by sort_order."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                                    "const body = pm.response.json();",
+                                    "pm.test('Partners data is valid', function () {",
+                                    "  pm.expect(body.success).to.eql(true);",
+                                    "  pm.expect(body.data).to.be.an('array');",
+                                    "  if (body.data.length) {",
+                                    "    pm.expect(body.data[0]).to.have.property('name');",
+                                    "    pm.expect(body.data[0]).to.have.property('logo');",
+                                    "  }",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "FAQs",
+            "description": "Published FAQ endpoints.",
+            "item": [
+                {
+                    "name": "List published FAQs",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/faqs?filter[group]={{faqGroup}}",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["v1", "faqs"],
+                            "query": [
+                                {
+                                    "key": "filter[group]",
+                                    "value": "{{faqGroup}}"
+                                }
+                            ]
+                        },
+                        "description": "Returns published FAQs. Optionally filter with filter[group]."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status is 200 or 422', function () { pm.expect([200, 422]).to.include(pm.response.code); });",
+                                    "const body = pm.response.json();",
+                                    "pm.test('FAQ response envelope is valid', function () {",
+                                    "  pm.expect(body).to.have.property('success');",
+                                    "  pm.expect(body).to.have.property('message');",
+                                    "  if (pm.response.code === 200) pm.expect(body.data).to.be.an('array');",
                                     "});"
                                 ]
                             }
