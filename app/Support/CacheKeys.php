@@ -30,4 +30,14 @@ final class CacheKeys
     {
         return 'partners:list';
     }
+
+    public static function docTree(): string
+    {
+        return 'docs:tree';
+    }
+
+    public static function docArticle(string $sectionSlug, string $articleSlug): string
+    {
+        return 'docs:article:' . $sectionSlug . ':' . $articleSlug;
+    }
 }
