@@ -28,8 +28,16 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName('سيلزواي | Saleszawy')
+            ->font('Cairo')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Emerald,
+                'secondary' => Color::Violet,
+                'info' => Color::Indigo,
+                'success' => Color::Teal,
+                'warning' => Color::Amber,
+                'danger' => Color::Rose,
+                'gray' => Color::Slate,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
@@ -54,6 +62,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->brandLogo(asset('images/logo.svg'))
+            ->brandLogoHeight('5.25rem');
     }
 }
