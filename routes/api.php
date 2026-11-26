@@ -7,7 +7,8 @@ Route::prefix('v1')
     ->middleware('throttle:60,1')
     ->name('api.v1.')
     ->group(function (): void {
-        include __DIR__ . '/page.php';
-        include __DIR__ . '/layout.php';
-        include __DIR__ . '/plan.php';
+        require __DIR__ . '/page.php';
+        require __DIR__ . '/layout.php';
+        require __DIR__ . '/plan.php';
+        require __DIR__ . '/faq.php';
     });

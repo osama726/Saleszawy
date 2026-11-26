@@ -20,4 +20,9 @@ final class CacheKeys
     {
         return 'layout:payload';
     }
+
+    public static function faqs(?string $group = null): string
+    {
+        return $group === null || $group === '' ? 'faqs:all' : 'faqs:group:' . $group;
+    }
 }
