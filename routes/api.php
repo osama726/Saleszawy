@@ -10,5 +10,6 @@ Route::prefix('v1')
         require __DIR__ . '/page.php';
         require __DIR__ . '/layout.php';
         require __DIR__ . '/plan.php';
+        require __DIR__ . '/partner.php';
         require __DIR__ . '/faq.php';
     });

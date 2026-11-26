@@ -32,7 +32,7 @@ class HomePageSeeder extends Seeder
 
         $page->blocks()->delete();
 
-        foreach ($this->blocks() as $index => [$type, $data]) {
+        foreach ($this->orderedBlocks() as $index => [$type, $data]) {
             $page->blocks()->create([
                 'type' => $type,
                 'data' => $data,
@@ -40,6 +40,46 @@ class HomePageSeeder extends Seeder
                 'is_visible' => true,
             ]);
         }
+    }
+
+    /**
+     * Order of the sections on the live site.
+     *
+     * @var array<int, BlockType>
+     */
+    private const ORDER = [
+        BlockType::Hero,
+        BlockType::ProblemSolution,
+        BlockType::Comparison,
+        BlockType::Showcase,
+        BlockType::FeaturesExplorer,
+        BlockType::Pbx,
+        BlockType::Integrations,
+        BlockType::Steps,
+        BlockType::Stats,
+        BlockType::Partners,
+        BlockType::Blog,
+        BlockType::Faq,
+        BlockType::About,
+        BlockType::Pricing,
+        BlockType::Contact,
+        BlockType::Cta,
+    ];
+
+    /**
+     * @return array<int, array{0: BlockType, 1: array<string, mixed>}>
+     */
+    private function orderedBlocks(): array
+    {
+        $position = [];
+        foreach (self::ORDER as $index => $type) {
+            $position[$type->value] = $index;
+        }
+
+        $blocks = $this->blocks();
+        usort($blocks, static fn (array $a, array $b): int => $position[$a[0]->value] <=> $position[$b[0]->value]);
+
+        return $blocks;
     }
 
     /**

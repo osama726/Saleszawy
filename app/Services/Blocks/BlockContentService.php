@@ -11,6 +11,7 @@ final class BlockContentService
     /** @var array<string, class-string<BlockEnricher>> */
     private const ENRICHERS = [
         'faq' => FaqBlockEnricher::class,
+        'partners' => PartnersBlockEnricher::class,
     ];
 
     public function __construct(private readonly Container $container) {}
