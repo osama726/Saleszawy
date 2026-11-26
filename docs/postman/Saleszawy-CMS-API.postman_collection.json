@@ -523,6 +523,57 @@
             ]
         },
         {
+            "name": "Features",
+            "description": "Published features and categories endpoints.",
+            "item": [
+                {
+                    "name": "List published features",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/features?filter[group]=home",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["v1", "features"],
+                            "query": [
+                                {
+                                    "key": "filter[group]",
+                                    "value": "home"
+                                }
+                            ]
+                        },
+                        "description": "Returns published feature categories and features. Omit filter[group] for all, or pass home / features."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status is 200 or 422', function () { pm.expect([200, 422]).to.include(pm.response.code); });",
+                                    "const body = pm.response.json();",
+                                    "pm.test('Features response envelope is valid', function () {",
+                                    "  pm.expect(body).to.have.property('success');",
+                                    "  pm.expect(body).to.have.property('message');",
+                                    "  if (pm.response.code === 200) {",
+                                    "    pm.expect(body.data).to.have.property('categories');",
+                                    "    pm.expect(body.data).to.have.property('features');",
+                                    "  }",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "Docs",
             "description": "Documentation tree, search, and article endpoints.",
             "item": [

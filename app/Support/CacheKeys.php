@@ -26,6 +26,11 @@ final class CacheKeys
         return $group === null || $group === '' ? 'faqs:all' : 'faqs:group:' . $group;
     }
 
+    public static function features(?string $group = null): string
+    {
+        return $group === null || $group === '' ? 'features:all' : 'features:group:' . $group;
+    }
+
     public static function partners(): string
     {
         return 'partners:list';

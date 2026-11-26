@@ -12,6 +12,7 @@ final class BlockContentService
     private const ENRICHERS = [
         'faq' => FaqBlockEnricher::class,
         'partners' => PartnersBlockEnricher::class,
+        'features_explorer' => FeaturesExplorerBlockEnricher::class,
     ];
 
     public function __construct(private readonly Container $container) {}
