@@ -25,6 +25,21 @@
             "key": "faqGroup",
             "value": "general",
             "type": "string"
+        },
+        {
+            "key": "docSection",
+            "value": "getting-started",
+            "type": "string"
+        },
+        {
+            "key": "docArticle",
+            "value": "intro",
+            "type": "string"
+        },
+        {
+            "key": "docQuery",
+            "value": "الواتساب",
+            "type": "string"
         }
     ],
     "item": [
@@ -500,6 +515,111 @@
                                     "  pm.expect(body).to.have.property('message');",
                                     "  if (pm.response.code === 200) pm.expect(body.data).to.be.an('array');",
                                     "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Docs",
+            "description": "Documentation tree, search, and article endpoints.",
+            "item": [
+                {
+                    "name": "Get documentation tree",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/docs/tree",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["v1", "docs", "tree"]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                                    "const body = pm.response.json();",
+                                    "pm.test('Docs tree is valid', function () { pm.expect(body.success).to.eql(true); pm.expect(body.data).to.be.an('array'); });"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Search documentation",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/docs/search?q={{docQuery}}",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["v1", "docs", "search"],
+                            "query": [{ "key": "q", "value": "{{docQuery}}" }]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status is 200 or 422', function () { pm.expect([200, 422]).to.include(pm.response.code); });",
+                                    "const body = pm.response.json();",
+                                    "if (pm.response.code === 200) pm.test('Search is valid', function () { pm.expect(body.success).to.eql(true); pm.expect(body.data).to.be.an('array'); pm.expect(body.meta).to.have.property('query'); });"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get documentation article",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/docs/{{docSection}}/{{docArticle}}",
+                            "host": ["{{baseUrl}}"],
+                            "path": [
+                                "v1",
+                                "docs",
+                                "{{docSection}}",
+                                "{{docArticle}}"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status is 200 or 404', function () { pm.expect([200, 404]).to.include(pm.response.code); });",
+                                    "const body = pm.response.json();",
+                                    "if (pm.response.code === 200) pm.test('Article is valid', function () { pm.expect(body.success).to.eql(true); pm.expect(body.data).to.have.property('content'); pm.expect(body.data).to.have.property('section'); });"
                                 ]
                             }
                         }

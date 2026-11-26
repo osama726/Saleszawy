@@ -20,6 +20,8 @@ tags:
     description: شركاء النجاح المنشورون
   - name: FAQs
     description: الأسئلة الشائعة المنشورة
+  - name: Docs
+    description: شجرة التوثيق والبحث والمقالات المنشورة
 
 paths:
   /v1/pages/{slug}:
@@ -299,6 +301,116 @@ paths:
           $ref: "#/components/responses/TooManyRequests"
         "500":
           $ref: "#/components/responses/ServerError"
+
+  /v1/docs:
+    get:
+      tags:
+        - Docs
+      summary: جلب شجرة التوثيق
+      operationId: getDocsTree
+      responses:
+        "200":
+          description: تم جلب شجرة التوثيق بنجاح
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocsTreeResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /v1/docs/tree:
+    get:
+      tags: [Docs]
+      summary: جلب شجرة أقسام التوثيق المنشورة
+      description: يعيد الأقسام الجذرية وأطفالها ومقالات كل قسم مرتبة حسب sort_order. المقالات في الشجرة تكون ملخصات بدون محتوى كامل.
+      operationId: getDocsTree
+      responses:
+        "200":
+          description: تم جلب شجرة التوثيق بنجاح
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocsTreeResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /v1/docs/search:
+    get:
+      tags: [Docs]
+      summary: البحث في مقالات التوثيق المنشورة
+      operationId: searchDocs
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: نص البحث، بطول من حرفين إلى 100 حرف
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 100
+            example: الواتساب
+      responses:
+        "200":
+          description: تم تنفيذ البحث بنجاح
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocsSearchResponse"
+        "422":
+          description: معامل البحث غير صالح أو ناقص
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /v1/docs/{section}/{article}:
+    get:
+      tags: [Docs]
+      summary: جلب مقال توثيق منشور
+      operationId: getDocArticle
+      parameters:
+        - name: section
+          in: path
+          required: true
+          description: slug للقسم المنشور
+          schema:
+            type: string
+            pattern: "^[A-Za-z0-9_-]+$"
+            example: getting-started
+        - name: article
+          in: path
+          required: true
+          description: slug للمقال المنشور داخل القسم
+          schema:
+            type: string
+            pattern: "^[A-Za-z0-9_-]+$"
+            example: intro
+      responses:
+        "200":
+          description: تم جلب المقال بنجاح
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocArticleResponse"
+        "404":
+          description: القسم أو المقال غير منشور أو المطابق ليس موجوداً
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
 components:
   schemas:
     PageResponse:
@@ -773,6 +885,169 @@ components:
         meta:
           type: object
           additionalProperties: true
+
+    DocArticleSummary:
+      type: object
+      required: [id, title, slug, excerpt, version]
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        slug:
+          type: string
+        excerpt:
+          type: string
+          nullable: true
+        version:
+          type: string
+          nullable: true
+
+    DocSection:
+      type: object
+      required: [id, title, slug, icon, articles, children]
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        slug:
+          type: string
+        icon:
+          type: string
+          nullable: true
+        articles:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocArticleSummary"
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocSection"
+
+    DocsTreeResponse:
+      type: object
+      required: [success, data, meta]
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocSection"
+        meta:
+          type: object
+          additionalProperties: true
+
+    DocArticle:
+      type: object
+      required:
+        [
+          id,
+          title,
+          slug,
+          excerpt,
+          content,
+          version,
+          section,
+          published_at,
+          updated_at,
+        ]
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        slug:
+          type: string
+        excerpt:
+          type: string
+          nullable: true
+        content:
+          type: string
+        version:
+          type: string
+          nullable: true
+        section:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            title:
+              type: string
+            slug:
+              type: string
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    DocArticleResponse:
+      type: object
+      required: [success, data, meta]
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/DocArticle"
+        meta:
+          type: object
+          additionalProperties: true
+
+    DocSearchResult:
+      type: object
+      required: [id, title, slug, snippet, section]
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        slug:
+          type: string
+        snippet:
+          type: string
+        section:
+          type: object
+          properties:
+            title:
+              type: string
+            slug:
+              type: string
+
+    DocsSearchResponse:
+      type: object
+      required: [success, data, meta]
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocSearchResult"
+        meta:
+          type: object
+          properties:
+            query:
+              type: string
+
   responses:
     TooManyRequests:
       description: تجاوز حد الطلبات المسموح
