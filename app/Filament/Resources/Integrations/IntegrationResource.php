@@ -10,6 +10,7 @@ use App\Filament\Resources\Integrations\Pages\EditIntegration;
 use App\Filament\Resources\Integrations\Pages\ListIntegrations;
 use App\Models\Integration;
 use BackedEnum;
+use UnitEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
@@ -37,7 +38,9 @@ class IntegrationResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    protected static ?int $navigationSort = 7;
+    protected static string|UnitEnum|null $navigationGroup = 'المحتوى والمميزات';
+
+    protected static ?int $navigationSort = 4;
 
     public static function form(Schema $schema): Schema
     {

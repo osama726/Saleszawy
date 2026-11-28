@@ -11,6 +11,7 @@ use App\Filament\Resources\Menus\Pages\ListMenus;
 use App\Filament\Resources\Menus\RelationManagers\ItemsRelationManager;
 use App\Models\Menu;
 use BackedEnum;
+use UnitEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
@@ -38,7 +39,9 @@ class MenuResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    protected static ?int $navigationSort = 3;
+    protected static string|UnitEnum|null $navigationGroup = 'إدارة الموقع';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

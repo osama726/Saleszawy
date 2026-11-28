@@ -6,6 +6,7 @@ namespace App\Filament\Pages;
 
 use App\Settings\GeneralSettings;
 use BackedEnum;
+use UnitEnum;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\SettingsPage;
@@ -23,7 +24,9 @@ class ManageGeneralSettings extends SettingsPage
 
     protected static ?string $title = 'هوية الموقع (الشعار والاسم)';
 
-    protected static ?int $navigationSort = 10;
+    protected static string|UnitEnum|null $navigationGroup = 'الإعدادات';
+
+    protected static ?int $navigationSort = 1;
 
     public function form(Schema $schema): Schema
     {

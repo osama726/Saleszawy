@@ -10,6 +10,7 @@ use App\Filament\Resources\DocArticles\Pages\EditDocArticle;
 use App\Filament\Resources\DocArticles\Pages\ListDocArticles;
 use App\Models\DocArticle;
 use BackedEnum;
+use UnitEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\RestoreAction;
@@ -45,7 +46,9 @@ class DocArticleResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    protected static ?int $navigationSort = 9;
+    protected static string|UnitEnum|null $navigationGroup = 'التوثيق';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

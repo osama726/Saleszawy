@@ -11,6 +11,7 @@ use App\Filament\Resources\Pages\Pages\ListPages;
 use App\Filament\Resources\Pages\RelationManagers\BlocksRelationManager;
 use App\Models\Page;
 use BackedEnum;
+use UnitEnum;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
@@ -36,6 +37,8 @@ class PageResource extends Resource
     protected static ?string $navigationLabel = 'الصفحات';
 
     protected static ?string $recordTitleAttribute = 'title';
+
+    protected static string|UnitEnum|null $navigationGroup = 'إدارة الموقع';
 
     protected static ?int $navigationSort = 1;
 

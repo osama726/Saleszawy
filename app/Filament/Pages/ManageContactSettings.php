@@ -6,6 +6,7 @@ namespace App\Filament\Pages;
 
 use App\Settings\ContactSettings;
 use BackedEnum;
+use UnitEnum;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\SettingsPage;
@@ -23,7 +24,9 @@ class ManageContactSettings extends SettingsPage
 
     protected static ?string $title = 'واتساب فورم التواصل';
 
-    protected static ?int $navigationSort = 12;
+    protected static string|UnitEnum|null $navigationGroup = 'التواصل والعملاء';
+
+    protected static ?int $navigationSort = 2;
 
     public function form(Schema $schema): Schema
     {

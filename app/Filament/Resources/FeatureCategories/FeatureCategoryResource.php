@@ -9,6 +9,7 @@ use App\Filament\Resources\FeatureCategories\Pages\EditFeatureCategory;
 use App\Filament\Resources\FeatureCategories\Pages\ListFeatureCategories;
 use App\Models\FeatureCategory;
 use BackedEnum;
+use UnitEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
@@ -34,7 +35,9 @@ class FeatureCategoryResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?int $navigationSort = 6;
+    protected static string|UnitEnum|null $navigationGroup = 'المحتوى والمميزات';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

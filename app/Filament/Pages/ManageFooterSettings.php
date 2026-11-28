@@ -6,6 +6,7 @@ namespace App\Filament\Pages;
 
 use App\Settings\FooterSettings;
 use BackedEnum;
+use UnitEnum;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -26,7 +27,9 @@ class ManageFooterSettings extends SettingsPage
 
     protected static ?string $title = 'إعدادات الفوتر';
 
-    protected static ?int $navigationSort = 11;
+    protected static string|UnitEnum|null $navigationGroup = 'الإعدادات';
+
+    protected static ?int $navigationSort = 2;
 
     public function form(Schema $schema): Schema
     {

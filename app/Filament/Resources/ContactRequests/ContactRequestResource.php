@@ -9,6 +9,7 @@ use App\Filament\Resources\ContactRequests\Pages\EditContactRequest;
 use App\Filament\Resources\ContactRequests\Pages\ListContactRequests;
 use App\Models\ContactRequest;
 use BackedEnum;
+use UnitEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
@@ -37,7 +38,9 @@ class ContactRequestResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?int $navigationSort = 4;
+    protected static string|UnitEnum|null $navigationGroup = 'التواصل والعملاء';
+
+    protected static ?int $navigationSort = 1;
 
     public static function canCreate(): bool
     {

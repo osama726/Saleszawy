@@ -9,6 +9,7 @@ use App\Filament\Resources\PostCategories\Pages\EditPostCategory;
 use App\Filament\Resources\PostCategories\Pages\ListPostCategories;
 use App\Models\PostCategory;
 use BackedEnum;
+use UnitEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
@@ -33,7 +34,9 @@ class PostCategoryResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?int $navigationSort = 10;
+    protected static string|UnitEnum|null $navigationGroup = 'المدونة';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

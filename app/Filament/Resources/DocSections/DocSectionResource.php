@@ -10,6 +10,7 @@ use App\Filament\Resources\DocSections\Pages\EditDocSection;
 use App\Filament\Resources\DocSections\Pages\ListDocSections;
 use App\Models\DocSection;
 use BackedEnum;
+use UnitEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
@@ -36,7 +37,9 @@ class DocSectionResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    protected static ?int $navigationSort = 8;
+    protected static string|UnitEnum|null $navigationGroup = 'التوثيق';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
     {
