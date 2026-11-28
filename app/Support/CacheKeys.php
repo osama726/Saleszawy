@@ -31,6 +31,11 @@ final class CacheKeys
         return $group === null || $group === '' ? 'features:all' : 'features:group:' . $group;
     }
 
+    public static function integrations(): string
+    {
+        return 'integrations:list';
+    }
+
     public static function postsIndex(): string
     {
         return 'posts:index';

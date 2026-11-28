@@ -58,8 +58,8 @@ class LayoutSeeder extends Seeder
                 'title' => 'حسابات وبوابات',
                 'location' => MenuLocation::Footer,
                 'items' => [
-                    ['label' => 'تسجيل دخول المشتركين', 'url' => '/login'],
-                    ['label' => 'تسجيل شركة جديدة', 'url' => '/register'],
+                    ['label' => 'تسجيل دخول المشتركين', 'url' => 'https://saleszawy.com/login'],
+                    ['label' => 'تسجيل شركة جديدة', 'url' => 'https://saleszawy.com/register-company'],
                     ['label' => 'الأسئلة الشائعة', 'url' => '/#faq'],
                 ],
             ],

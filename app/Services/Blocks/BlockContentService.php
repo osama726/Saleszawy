@@ -13,6 +13,7 @@ final class BlockContentService
         'faq' => FaqBlockEnricher::class,
         'partners' => PartnersBlockEnricher::class,
         'features_explorer' => FeaturesExplorerBlockEnricher::class,
+        'integrations' => IntegrationsBlockEnricher::class,
         'blog' => BlogBlockEnricher::class,
     ];
 
