@@ -751,6 +751,50 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "Contact",
+            "description": "Public contact request endpoint.",
+            "item": [
+                {
+                    "name": "Create contact request",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {"key": "Accept", "value": "application/json", "type": "text"},
+                            {"key": "Content-Type", "value": "application/json", "type": "text"}
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"أحمد محمد\",\n  \"phone\": \"+20 100 123 4567\",\n  \"message\": \"عايز عرض توضيحي\",\n  \"source\": \"home\",\n  \"website\": \"\"\n}",
+                            "options": {"raw": {"language": "json"}}
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/contact-requests",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["v1", "contact-requests"]
+                        },
+                        "description": "Creates a contact request and returns a WhatsApp link. Keep website empty; it is a honeypot field."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status is 201, 422, or 429', function () { pm.expect([201, 422, 429]).to.include(pm.response.code); });",
+                                    "const body = pm.response.json();",
+                                    "pm.test('Unified response envelope is valid', function () {",
+                                    "  pm.expect(body).to.have.property('success');",
+                                    "  pm.expect(body).to.have.property('message');",
+                                    "});",
+                                    "if (pm.response.code === 201) pm.test('WhatsApp URL is present', function () { pm.expect(body.data).to.have.property('whatsapp_url'); });"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

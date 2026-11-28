@@ -16,4 +16,5 @@ Route::prefix('v1')
         require __DIR__ . '/integration.php';
         require __DIR__ . '/post.php';
         require __DIR__ . '/doc.php';
+        require __DIR__ . '/contact.php';
     });

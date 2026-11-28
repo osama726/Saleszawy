@@ -26,6 +26,8 @@ tags:
     description: مقالات المدونة وتصنيفاتها المنشورة
   - name: Docs
     description: شجرة التوثيق والبحث والمقالات المنشورة
+  - name: Contact
+    description: إرسال طلبات التواصل والعودة عبر واتساب
 
 paths:
   /v1/pages/{slug}:
@@ -536,6 +538,57 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /v1/contact-requests:
+    post:
+      tags: [Contact]
+      summary: إرسال طلب تواصل جديد
+      description: يحفظ طلب التواصل ويعيد رابط واتساب جاهزًا بناءً على إعدادات النظام. الحقل website يعمل كـ honeypot ولا يكشف للبوت أن الطلب لم يُحفظ.
+      operationId: createContactRequest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateContactRequest"
+            example:
+              name: أحمد محمد
+              phone: "+20 100 123 4567"
+              message: عايز عرض توضيحي
+              source: home
+              website: ""
+      responses:
+        "201":
+          description: تم استلام طلب التواصل بنجاح
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateContactRequestResponse"
+              example:
+                success: true
+                message: تم استلام طلبك وسنتواصل معك قريباً
+                data:
+                  whatsapp_url: "https://wa.me/201212020075?text=%D8%B7%D9%84%D8%A8%20%D9%85%D9%86%20%D8%A3%D8%AD%D9%85%D8%AF"
+                meta: {}
+        "422":
+          description: بيانات الطلب غير صالحة
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                success: false
+                message: البيانات المدخلة غير صحيحة
+                code: VALIDATION_ERROR
+                errors:
+                  name:
+                    - الاسم مطلوب
+                  phone:
+                    - رقم الهاتف مطلوب
         "429":
           $ref: "#/components/responses/TooManyRequests"
         "500":
@@ -1407,6 +1460,67 @@ components:
           properties:
             query:
               type: string
+
+    CreateContactRequest:
+      type: object
+      required: [name, phone]
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 150
+          example: أحمد محمد
+        phone:
+          type: string
+          description: رقم الهاتف بصيغة دولية أو أرقام مع مسافات وشرطات وأقواس
+          minLength: 7
+          maxLength: 20
+          example: "+20 100 123 4567"
+        message:
+          type: string
+          maxLength: 2000
+          nullable: true
+          example: عايز عرض توضيحي
+        source:
+          type: string
+          maxLength: 50
+          nullable: true
+          description: مصدر الطلب، مثل home أو pricing
+          example: home
+        website:
+          type: string
+          nullable: true
+          description: Honeypot مخفي يجب أن يبقى فارغاً للزوار الحقيقيين
+          example: ""
+
+    CreateContactRequestData:
+      type: object
+      required: [whatsapp_url]
+      properties:
+        whatsapp_url:
+          type: string
+          format: uri
+          nullable: true
+          description: رابط wa.me المنشأ وفق إعدادات واتساب
+          example: "https://wa.me/201212020075?text=%D8%B7%D9%84%D8%A8%20%D9%85%D9%86%20%D8%A3%D8%AD%D9%85%D8%AF"
+
+    CreateContactRequestResponse:
+      type: object
+      required: [success, message, data, meta]
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+          example: true
+        message:
+          type: string
+          example: تم استلام طلبك وسنتواصل معك قريباً
+        data:
+          $ref: "#/components/schemas/CreateContactRequestData"
+        meta:
+          type: object
+          additionalProperties: true
+          example: {}
 
   responses:
     TooManyRequests:
