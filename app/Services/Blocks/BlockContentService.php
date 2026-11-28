@@ -13,6 +13,7 @@ final class BlockContentService
         'faq' => FaqBlockEnricher::class,
         'partners' => PartnersBlockEnricher::class,
         'features_explorer' => FeaturesExplorerBlockEnricher::class,
+        'blog' => BlogBlockEnricher::class,
     ];
 
     public function __construct(private readonly Container $container) {}

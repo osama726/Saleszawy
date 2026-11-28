@@ -574,6 +574,80 @@
             ]
         },
         {
+            "name": "Posts",
+            "description": "Published blog posts and categories endpoints.",
+            "item": [
+                {
+                    "name": "List published posts",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/posts",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["v1", "posts"]
+                        },
+                        "description": "Returns published categories, tags, and posts. Supports filter[category], filter[tag], filter[featured], q, and limit."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status is 200 or 422', function () { pm.expect([200, 422]).to.include(pm.response.code); });",
+                                    "const body = pm.response.json();",
+                                    "pm.test('Posts response envelope is valid', function () {",
+                                    "  pm.expect(body).to.have.property('success');",
+                                    "  if (pm.response.code === 200) {",
+                                    "    pm.expect(body.data).to.have.property('categories');",
+                                    "    pm.expect(body.data).to.have.property('posts');",
+                                    "  }",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get published post",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/posts/b2b-whatsapp-sales-guide-2026",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["v1", "posts", "b2b-whatsapp-sales-guide-2026"]
+                        },
+                        "description": "Returns a single published blog post by slug."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status is 200 or 404', function () { pm.expect([200, 404]).to.include(pm.response.code); });"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "Docs",
             "description": "Documentation tree, search, and article endpoints.",
             "item": [
